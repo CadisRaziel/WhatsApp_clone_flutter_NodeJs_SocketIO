@@ -25,7 +25,7 @@ class CustomCardWidget extends StatelessWidget {
                 radius: 30,
                 backgroundColor: Colors.blueGrey,
                 child:
-                    Icon(chatModel!.isGroup ? (Icons.group) : (Icons.person)),
+                    Icon(chatModel!.isGroup ? (Icons.group) : (Icons.person), color: Colors.white,),
               ),
               title: Text(
                 chatModel!.name,

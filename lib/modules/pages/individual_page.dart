@@ -80,6 +80,10 @@ class _IndividualPageState extends State<IndividualPage> {
     );
   }
 
+  Widget bottomClips() {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,7 +229,15 @@ class _IndividualPageState extends State<IndividualPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          //* showModalBottomSheet = é do proprio flutter, e abre uma caixa de dialogo
+                                          //* por cima da tela atual, mostrando icones ou coisa que queremos, e deixando a tela de traz sem foco e escura clara
+                                          //*podemos criar uma função de Widget e colocar o que quisermos dentro
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (builder) =>
+                                                  bottomClips());
+                                        },
                                         icon: Icon(
                                           Icons.attach_file,
                                           color: Colors.grey,

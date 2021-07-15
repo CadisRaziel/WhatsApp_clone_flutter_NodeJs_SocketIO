@@ -15,18 +15,15 @@ class ContatoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: ListTile(
-        leading: CircleAvatar(
-          radius: 23,
-          backgroundColor: AppColors.buttonColor,
-          child: Icon(icon, color: Colors.white, size: 26 ,),
-        ),
-        title: Text(
-          name!,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 23,
+        backgroundColor: AppColors.buttonColor,
+        child: Icon(icon, color: Colors.white, size: 26 ,),
+      ),
+      title: Text(
+        name!,
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
       ),
     );
   }

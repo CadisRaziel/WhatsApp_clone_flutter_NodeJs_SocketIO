@@ -9,6 +9,7 @@ class ChatModel {
   String status;
   Widget? icon;
   bool isGroup;
+  bool selectGroup;
 
 
   ChatModel({
@@ -18,6 +19,7 @@ class ChatModel {
     this.status = '',
     this.icon,
     this.isGroup = false,
+    this.selectGroup = false
   });
   
 

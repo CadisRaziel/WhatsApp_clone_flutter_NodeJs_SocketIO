@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/modules/CustomUI/contatos_button_card.dart';
 import 'package:nome_whatsclone/modules/CustomUI/contatos_card.dart';
+import 'package:nome_whatsclone/modules/pages/criar_grupo_page.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
 
 class ContatosPage extends StatefulWidget {
@@ -119,16 +120,23 @@ class _ContatosPageState extends State<ContatosPage> {
         ],
       ),
       body: ListView.builder(
-        //! +2 e -2 = para que o nosso contexto(contatosModel) vai começar do zero e os dois indices abaixo ajusta os -2
+          //! +2 e -2 = para que o nosso contexto(contatosModel) vai começar do zero e os dois indices abaixo ajusta os -2
           itemCount: contatosModel.length + 2,
           itemBuilder: (context, index) {
             if (index == 0) {
-              return ContatoButton(
-                icon: Icons.group, name: 'Novo grupo',
+              return InkWell(
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (builder) => CriarGrupoPage()));
+                },
+                child: ContatoButton(
+                  icon: Icons.group,
+                  name: 'Novo grupo',
+                ),
               );
             } else if (index == 1) {
               return ContatoButton(
-                icon: Icons.person_add, name: 'Novo contato',
+                icon: Icons.person_add,
+                name: 'Novo contato',
               );
             }
             return ContatosCard(contatos: contatosModel[index - 2]);

@@ -77,7 +77,7 @@ class _ConversasPageState extends State<ConversasPage> {
         name: 'Animes 90s',
         isGroup: true,
         currentMessage: 'Eu vi o filme do Vampire Hunter D',
-        time: '17:38',
+        time: '00:20',
         icon: Icon(
           Icons.group,
           color: Colors.white70,
@@ -86,7 +86,7 @@ class _ConversasPageState extends State<ConversasPage> {
         name: 'Biker Lovers',
         isGroup: true,
         currentMessage: 'O pneu da minha bike muchou',
-        time: '17:38',
+        time: '18:07',
         icon: Icon(
           Icons.group,
           color: Colors.white70,
@@ -95,7 +95,7 @@ class _ConversasPageState extends State<ConversasPage> {
         name: 'Amigo',
         isGroup: false,
         currentMessage: 'to cansado hoje',
-        time: '17:38',
+        time: '11:20',
         icon: Icon(
           Icons.group,
           color: Colors.white70,
@@ -104,7 +104,7 @@ class _ConversasPageState extends State<ConversasPage> {
         name: 'Sk8',
         isGroup: true,
         currentMessage: 'shape quebrou',
-        time: '17:38',
+        time: '12:02',
         icon: Icon(
           Icons.group,
           color: Colors.white70,

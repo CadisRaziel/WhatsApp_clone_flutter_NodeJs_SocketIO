@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:nome_whatsclone/modules/home/home_screen.dart';
+import 'package:nome_whatsclone/Pages/chat_page.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 
 class MyApp extends StatelessWidget {

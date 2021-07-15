@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nome_whatsclone/modules/pages/conversas_page.dart';
+import 'package:nome_whatsclone/modules/screen/conversas_screen.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
 
 class HomeScreen extends StatefulWidget {

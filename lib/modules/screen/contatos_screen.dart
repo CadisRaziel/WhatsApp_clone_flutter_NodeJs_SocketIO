@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
-import 'package:nome_whatsclone/modules/CustomUI/contatos_button_card.dart';
-import 'package:nome_whatsclone/modules/CustomUI/contatos_card.dart';
-import 'package:nome_whatsclone/modules/pages/criar_grupo_page.dart';
+import 'package:nome_whatsclone/modules/CustomUI/custom_contatos_button_card.dart';
+import 'package:nome_whatsclone/modules/CustomUI/custom_contatos_card.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
+
+import 'criar_grupo_screen.dart';
 
 class ContatosPage extends StatefulWidget {
   const ContatosPage({Key? key}) : super(key: key);

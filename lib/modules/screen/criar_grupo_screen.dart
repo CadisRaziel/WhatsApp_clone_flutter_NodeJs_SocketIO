@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
-import 'package:nome_whatsclone/modules/CustomUI/Avatar_card_grupos.dart';
-import 'package:nome_whatsclone/modules/CustomUI/contatos_card.dart';
+import 'package:nome_whatsclone/modules/CustomUI/custom_avatar_card_grupos.dart';
+import 'package:nome_whatsclone/modules/CustomUI/custom_contatos_card.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
 
 class CriarGrupoPage extends StatefulWidget {

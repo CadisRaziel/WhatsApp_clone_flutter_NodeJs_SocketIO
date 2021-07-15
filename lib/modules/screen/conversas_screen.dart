@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/modules/CustomUI/custom_card.dart';
 
-import 'contatos_page.dart';
+import 'contatos_screen.dart';
 
 class ConversasPage extends StatefulWidget {
   const ConversasPage({Key? key}) : super(key: key);

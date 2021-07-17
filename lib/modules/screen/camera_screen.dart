@@ -1,6 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nome_whatsclone/modules/screen/cameraView_screen.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 //*Colocando uma variavel aqui ela fica global para usarmos em qualquer lugar(variavel global)
 //*vai colcoar todas as cameras do dispotivo disponivel em uma lista
@@ -18,12 +21,30 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void>? cameraValue;
 
+
+  //metodo para tirar a foto ao clicar no botão usando o package path_provider
+  void tirarFoto(BuildContext context) async {
+    final path = join((await getTemporaryDirectory()).path, '${DateTime.now()}.jpg');   
+    XFile foto = await _cameraController!.takePicture(); 
+    foto.saveTo(path);   
+    //*vamos passar um path como parametro para a proxima tela
+    Navigator.push(context, MaterialPageRoute(builder: (builder) => CameraViewScreen(path: path)));
+  }
+  
+
   //*precisamos inicializar as daus variaveis '_cameraController' e 'cameraValue' no initState
   @override
   void initState() {
     super.initState();
     _cameraController = CameraController(cameras![0], ResolutionPreset.high);
     cameraValue = _cameraController!.initialize();
+  }
+
+  //*ja que iniciamos no initState, devemos fechar no dispose
+  @override
+  void dispose(){
+    super.dispose();
+    _cameraController!.dispose();
   }
 
   @override
@@ -67,7 +88,9 @@ class _CameraScreenState extends State<CameraScreen> {
                         onPressed: () {},
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          tirarFoto(context);                          
+                        },
                         child: Icon(
                           Icons.panorama_fish_eye,
                           color: Colors.white,

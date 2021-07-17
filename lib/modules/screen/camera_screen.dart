@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nome_whatsclone/modules/screen/cameraVideoView_screen.dart';
 import 'package:nome_whatsclone/modules/screen/cameraView_screen.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,19 +19,20 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   CameraController? _cameraController;
-
   Future<void>? cameraValue;
-
+  bool isRecoring = false;
+  String videoPath = '';
 
   //metodo para tirar a foto ao clicar no botão usando o package path_provider
   void tirarFoto(BuildContext context) async {
-    final path = join((await getTemporaryDirectory()).path, '${DateTime.now()}.jpg');   
-    XFile foto = await _cameraController!.takePicture(); 
-    foto.saveTo(path);   
+    final path =
+        join((await getTemporaryDirectory()).path, '${DateTime.now()}.jpg');
+    XFile foto = await _cameraController!.takePicture();
+    foto.saveTo(path);
     //*vamos passar um path como parametro para a proxima tela
-    Navigator.push(context, MaterialPageRoute(builder: (builder) => CameraViewScreen(path: path)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (builder) => CameraViewScreen(path: path)));
   }
-  
 
   //*precisamos inicializar as daus variaveis '_cameraController' e 'cameraValue' no initState
   @override
@@ -42,7 +44,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   //*ja que iniciamos no initState, devemos fechar no dispose
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _cameraController!.dispose();
   }
@@ -87,15 +89,47 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                         onPressed: () {},
                       ),
-                      InkWell(
-                        onTap: () {
-                          tirarFoto(context);                          
+                      GestureDetector(
+                        onLongPress: () async {
+                          final path = join(
+                              (await getTemporaryDirectory()).path,
+                              '${DateTime.now()}.mp4');
+                              //! preciso salvar o path de alguma forma !!! esta incompleto aqui
+                          await _cameraController!.startVideoRecording();                          
+                          setState(() {
+                            isRecoring = true;
+                            videoPath = path;
+                          });
                         },
-                        child: Icon(
-                          Icons.panorama_fish_eye,
-                          color: Colors.white,
-                          size: 70,
-                        ),
+
+                        //*onLongPressUp = para encerrar o longPress
+                        onLongPressUp: () async {
+                          await _cameraController!.stopVideoRecording();
+                          setState(() {
+                            isRecoring = false;
+                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => CameraVideoViewScreen(
+                                        path: videoPath,
+                                      )));
+                        },
+                        onTap: () {
+                          if (!isRecoring) tirarFoto(context);
+                        },
+                        //*condição pois se clicar e segurar ele aparece o radio_button_on e se nao segurar ele aparece o panorama_fish_eye
+                        child: isRecoring
+                            ? Icon(
+                                Icons.radio_button_on,
+                                color: Colors.red,
+                                size: 80,
+                              )
+                            : Icon(
+                                Icons.panorama_fish_eye,
+                                color: Colors.white,
+                                size: 70,
+                              ),
                       ),
                       IconButton(
                         icon: Icon(

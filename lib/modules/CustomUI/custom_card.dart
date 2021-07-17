@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
-import 'package:nome_whatsclone/modules/pages/individual_page.dart';
+import 'package:nome_whatsclone/modules/screen/individual_conversa_screen.dart';
 
 class CustomCardWidget extends StatelessWidget {
   const CustomCardWidget({Key? key, this.chatModel}) : super(key: key);
@@ -25,7 +25,7 @@ class CustomCardWidget extends StatelessWidget {
                 radius: 30,
                 backgroundColor: Colors.blueGrey,
                 child:
-                    Icon(chatModel!.isGroup ? (Icons.group) : (Icons.person)),
+                    Icon(chatModel!.isGroup ? (Icons.group) : (Icons.person), color: Colors.white,),
               ),
               title: Text(
                 chatModel!.name,

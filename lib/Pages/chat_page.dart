@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nome_whatsclone/modules/pages/conversas_page.dart';
+import 'package:nome_whatsclone/Pages/camera_page.dart';
+import 'package:nome_whatsclone/modules/screen/conversas_screen.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -100,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
         controller: _controller,
         children: [
           //* aqui nós vamos colocar as paginas widgets referente a cada tab
-          Center(child: Text('Camera')),
+          CameraPage(),
           ConversasPage(),
           Center(child: Text('STATUS')),
           Center(child: Text('CHAMADAS')),

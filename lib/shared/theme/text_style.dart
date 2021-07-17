@@ -17,4 +17,11 @@ class TextStyles {
     fontWeight: FontWeight.bold,
     fontSize: 16,     
   );
+  static final titleContatos = GoogleFonts.openSans(
+    fontWeight: FontWeight.w600,
+    fontSize: 19,     
+  );
+  static final subTitleContatos = GoogleFonts.openSans(    
+    fontSize: 13,     
+  );
 }

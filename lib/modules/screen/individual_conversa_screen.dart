@@ -80,6 +80,97 @@ class _IndividualPageState extends State<IndividualPage> {
     );
   }
 
+  //*Widget do IconButton clips
+  Widget bottomClips() {
+    return Container(
+      height: 278,
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        margin: EdgeInsets.all(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          //*SingleChildScrollView = para a hora de rotacionar ele nao quebre a tela por conta do tamanho do container
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    iconCreationClips(
+                      icon: Icons.insert_drive_file,
+                      color: Colors.indigo,
+                      text: 'Documento',
+                    ),
+                    iconCreationClips(
+                      icon: Icons.camera_alt,
+                      color: Colors.pink,
+                      text: 'Câmera',
+                    ),
+                    iconCreationClips(
+                      icon: Icons.insert_photo,
+                      color: Colors.purple,
+                      text: 'Galeria',
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    iconCreationClips(
+                      icon: Icons.headset,
+                      color: Colors.orange,
+                      text: 'Áudio',
+                    ),
+                    iconCreationClips(
+                      icon: Icons.location_pin,
+                      color: Colors.teal,
+                      text: 'Localização',
+                    ),
+                    iconCreationClips(
+                      icon: Icons.person,
+                      color: Colors.blue,
+                      text: 'Contato',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  //*Icones para o IconButton clips
+  //*Repare que a partir dos parametros que insereimos, a hora que instacimaos ali em cima,
+  //*é só colocar o que queremos, isso evita a criação de varias e varias funções para a mesma finalidade
+  //*repare como uso os parametros abaixo, e repare como eu os coloco ali em cima quando eu instancio a função
+  Widget iconCreationClips({IconData? icon, Color? color, String? text}) {
+    return Column(
+      children: [
+        //*Colocar esse inkwell depois apenas no 'icon'
+        InkWell(
+          onTap: () {},
+          child: CircleAvatar(
+            backgroundColor: color,
+            radius: 30,
+            child: Icon(
+              icon,
+              size: 29,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          text!,
+          style: TextStyle(fontSize: 12),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,7 +316,18 @@ class _IndividualPageState extends State<IndividualPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          //* showModalBottomSheet = é do proprio flutter, e abre uma caixa de dialogo
+                                          //* por cima da tela atual, mostrando icones ou coisa que queremos, e deixando a tela de traz sem foco e escura clara
+                                          //*podemos criar uma função de Widget e colocar o que quisermos dentro
+                                          showModalBottomSheet(
+                                              //! colocamos a backgroundColor aqui para tirar a cor de fundo do container, e ficar somente a do card
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  bottomClips());
+                                        },
                                         icon: Icon(
                                           Icons.attach_file,
                                           color: Colors.grey,

@@ -38,7 +38,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    _cameraController = CameraController(cameras![0], ResolutionPreset.high);
+    _cameraController = CameraController(cameras![0], ResolutionPreset.max);
     cameraValue = _cameraController!.initialize();
   }
 

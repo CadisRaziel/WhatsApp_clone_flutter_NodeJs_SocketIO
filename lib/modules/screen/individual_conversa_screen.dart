@@ -1,7 +1,10 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
+import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemEnviada_card.dart';
+import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemRecebida_card.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
+import 'package:nome_whatsclone/shared/theme/app_images.dart';
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage({Key? key, this.chatModel}) : super(key: key);
@@ -173,213 +176,251 @@ class _IndividualPageState extends State<IndividualPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      appBar: AppBar(
-        titleSpacing: 0,
-        leadingWidth: 70,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.arrow_back),
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.blueGrey,
-                child: Icon(
-                    widget.chatModel!.isGroup ? (Icons.group) : (Icons.person)),
+    return Stack(
+      children: [
+        Image.asset(
+          AppImages.papelDeParede,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            titleSpacing: 0,
+            leadingWidth: 70,
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.arrow_back),
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.blueGrey,
+                    child: Icon(widget.chatModel!.isGroup
+                        ? (Icons.group)
+                        : (Icons.person)),
+                  ),
+                ],
+              ),
+            ),
+            title: InkWell(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.all(5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.chatModel!.name,
+                      style: TextStyle(
+                        fontSize: 18.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Visto por último as 12:10',
+                      style: TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.videocam),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.call),
+              ),
+              //* PopupMenuButton = para criar o menu do lado o icone de procurar
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  ///[aqui podemos fazer um switch e adicionar as telas de cada um]
+                  print(value);
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      child: Text('Ver contato'),
+                      value: 'Ver contato',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Mídia, links e docs'),
+                      value: 'Mídia, links e docs',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Pesquisar'),
+                      value: 'Pesquisar',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Silenciar notificações'),
+                      value: 'Silenciar notificações',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Papel de parede'),
+                      value: 'Papel de parede',
+                    ),
+                  ];
+                },
               ),
             ],
           ),
-        ),
-        title: InkWell(
-          onTap: () {},
-          child: Container(
-            margin: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.chatModel!.name,
-                  style: TextStyle(
-                    fontSize: 18.5,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Visto por último as 12:10',
-                  style: TextStyle(
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.videocam),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.call),
-          ),
-          //* PopupMenuButton = para criar o menu do lado o icone de procurar
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              ///[aqui podemos fazer um switch e adicionar as telas de cada um]
-              print(value);
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  child: Text('Ver contato'),
-                  value: 'Ver contato',
-                ),
-                PopupMenuItem(
-                  child: Text('Mídia, links e docs'),
-                  value: 'Mídia, links e docs',
-                ),
-                PopupMenuItem(
-                  child: Text('Pesquisar'),
-                  value: 'Pesquisar',
-                ),
-                PopupMenuItem(
-                  child: Text('Silenciar notificações'),
-                  value: 'Silenciar notificações',
-                ),
-                PopupMenuItem(
-                  child: Text('Papel de parede'),
-                  value: 'Papel de parede',
-                ),
-              ];
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: WillPopScope(
-            child: Stack(
-              children: [
-                ListView(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Row(
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: WillPopScope(
+                child: Stack(
+                  children: [
+                    //*vamos adicionar as conversas aqui no ListView
+                    Container(
+                      //* -143 para que as mensagens ao rolar nao fique atras da caixa de texto(textFormField), elas sumam ao chegar nela
+                      height: MediaQuery.of(context).size.height - 143,
+                      child: ListView(
+                        shrinkWrap: true,
                         children: [
-                          Container(
-                            //* -55 para ele aparecer na tela, va testando !!
-                            width: MediaQuery.of(context).size.width - 55,
-                            //* repare que com o 'Card' eu tenho o mesmo resultado do InputDecoration, porém fora do TextFormField !!
-                            child: Card(
-                              margin:
-                                  EdgeInsets.only(left: 5, right: 2, bottom: 8),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: TextFormField(
-                                focusNode: focusNode,
-                                controller: _controller,
-                                textAlignVertical: TextAlignVertical.center,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: 5,
-                                minLines: 1,
-                                decoration: InputDecoration(
-                                  //*o InputBorder.none tira aquela linha do InputDecoratio aonde indica para digitar o texto
-                                  border: InputBorder.none,
-                                  hintText: 'Digite uma mensagem',
-                                  contentPadding: EdgeInsets.all(5),
-                                  prefixIcon: IconButton(
-                                    icon: Icon(
-                                      Icons.emoji_emotions_outlined,
-                                      color: Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      //*o focusnode vai fazer que quando clicarmos no botão de emotion, o teclado não abra !!!
-                                      focusNode.unfocus();
-                                      focusNode.canRequestFocus = false;
-                                      setState(() {
-                                        emojiShowing = !emojiShowing;
-                                      });
-                                    },
-                                  ),
-                                  suffixIcon: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          //* showModalBottomSheet = é do proprio flutter, e abre uma caixa de dialogo
-                                          //* por cima da tela atual, mostrando icones ou coisa que queremos, e deixando a tela de traz sem foco e escura clara
-                                          //*podemos criar uma função de Widget e colocar o que quisermos dentro
-                                          showModalBottomSheet(
-                                              //! colocamos a backgroundColor aqui para tirar a cor de fundo do container, e ficar somente a do card
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              context: context,
-                                              builder: (builder) =>
-                                                  bottomClips());
-                                        },
-                                        icon: Icon(
-                                          Icons.attach_file,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons.camera_alt,
-                                            color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 2, right: 2, bottom: 8),
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: AppColors.accent,
-                              child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.mic,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
+                          MensagemEnviadaCard(),
+                          MensagemRecebidaCard(),
                         ],
                       ),
-                      emojiShowing ? emojiSelected() : Container()
-                    ],
-                  ),
-                )
-              ],
-            ),
-            //* para evitar que quando arrastarmos a tela para sair do teclado ou do teclado de emoji, ele não vai sair da tela de conversa
-            //* ele vai sair apenas dos teclados
-            onWillPop: () {
-              if (emojiShowing) {
-                setState(() {
-                  emojiShowing = false;
-                });
-              } else {
-                Navigator.pop(context);
-              }
-              return Future.value(false);
-            }),
-      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                //* -55 para ele aparecer na tela, va testando !!
+                                width: MediaQuery.of(context).size.width - 55,
+                                //* repare que com o 'Card' eu tenho o mesmo resultado do InputDecoration, porém fora do TextFormField !!
+                                child: Card(
+                                  margin: EdgeInsets.only(
+                                      left: 5, right: 2, bottom: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: TextFormField(
+                                    focusNode: focusNode,
+                                    controller: _controller,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: 5,
+                                    minLines: 1,
+                                    decoration: InputDecoration(
+                                      //*o InputBorder.none tira aquela linha do InputDecoratio aonde indica para digitar o texto
+                                      border: InputBorder.none,
+                                      hintText: 'Digite uma mensagem',
+                                      contentPadding: EdgeInsets.all(5),
+                                      prefixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.emoji_emotions_outlined,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: () {
+                                          //*o focusnode vai fazer que quando clicarmos no botão de emotion, o teclado não abra !!!
+                                          focusNode.unfocus();
+                                          focusNode.canRequestFocus = false;
+                                          setState(() {
+                                            emojiShowing = !emojiShowing;
+                                          });
+                                        },
+                                      ),
+                                      suffixIcon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              //* showModalBottomSheet = é do proprio flutter, e abre uma caixa de dialogo
+                                              //* por cima da tela atual, mostrando icones ou coisa que queremos, e deixando a tela de traz sem foco e escura clara
+                                              //*podemos criar uma função de Widget e colocar o que quisermos dentro
+                                              showModalBottomSheet(
+                                                  //! colocamos a backgroundColor aqui para tirar a cor de fundo do container, e ficar somente a do card
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  context: context,
+                                                  builder: (builder) =>
+                                                      bottomClips());
+                                            },
+                                            icon: Icon(
+                                              Icons.attach_file,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.camera_alt,
+                                                color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 2, right: 2, bottom: 8),
+                                child: CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: AppColors.accent,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.mic,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          emojiShowing ? emojiSelected() : Container()
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                //* para evitar que quando arrastarmos a tela para sair do teclado ou do teclado de emoji, ele não vai sair da tela de conversa
+                //* ele vai sair apenas dos teclados
+                onWillPop: () {
+                  if (emojiShowing) {
+                    setState(() {
+                      emojiShowing = false;
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                  return Future.value(false);
+                }),
+          ),
+        ),
+      ],
     );
   }
 }

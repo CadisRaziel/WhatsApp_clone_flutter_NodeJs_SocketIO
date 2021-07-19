@@ -19,7 +19,8 @@ class _CameraScreenState extends State<CameraScreen> {
   CameraController? _cameraController;
   Future<void>? cameraValue;
   bool isRecoring = false;
-  bool flash = false;
+  bool isFlash = false;
+  bool isCameraFront = false;
   String videoPath = '';
   XFile? fotoFile;
   XFile? videoFile;
@@ -86,17 +87,17 @@ class _CameraScreenState extends State<CameraScreen> {
                     children: [
                       IconButton(
                         icon: Icon(
-                          //*condição do flash ligado e desligado
-                          flash ? Icons.flash_on : Icons.flash_off,
+                          //*condição do icone do flash ligado e desligado
+                          isFlash ? Icons.flash_on : Icons.flash_off,
                           color: Colors.white,
                           size: 28,
                         ),
                         onPressed: () {
                           setState(() {
-                            flash = !flash;
+                            isFlash = !isFlash;
                           });
                           //*condição para ligar o flash e desligar o flash
-                          flash
+                          isFlash
                               ? _cameraController!.setFlashMode(FlashMode.torch)
                               : _cameraController!.setFlashMode(FlashMode.off);
                         },
@@ -140,12 +141,22 @@ class _CameraScreenState extends State<CameraScreen> {
                               ),
                       ),
                       IconButton(
+                        //*animação do icone de girar o icone da camera de ao clicar nele
                         icon: Icon(
                           Icons.flip_camera_ios,
                           color: Colors.white,
                           size: 28,
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          //*condição para usarmos a camera frontal ao clicar no icone de virar a camera
+                          setState(() {
+                            isCameraFront = !isCameraFront;
+                          });
+                          int cameraFlip = isCameraFront ? 1 : 0;
+                          _cameraController = CameraController(
+                              cameras![cameraFlip], ResolutionPreset.high);
+                          cameraValue = _cameraController!.initialize();
+                        },
                       ),
                     ],
                   ),

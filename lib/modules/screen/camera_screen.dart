@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nome_whatsclone/modules/screen/cameraVideoView_screen.dart';
 import 'package:nome_whatsclone/modules/screen/cameraView_screen.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 //*Colocando uma variavel aqui ela fica global para usarmos em qualquer lugar(variavel global)
 //*vai colcoar todas as cameras do dispotivo disponivel em uma lista
@@ -22,16 +21,17 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void>? cameraValue;
   bool isRecoring = false;
   String videoPath = '';
+  XFile? fotoFile;
+  XFile? videoFile;
+
+  
 
   //metodo para tirar a foto ao clicar no botão usando o package path_provider
-  void tirarFoto(BuildContext context) async {
-    final path =
-        join((await getTemporaryDirectory()).path, '${DateTime.now()}.jpg');
-    XFile foto = await _cameraController!.takePicture();
-    foto.saveTo(path);
+  void tirarFoto(BuildContext context) async {   
+    fotoFile = await _cameraController!.takePicture();    
     //*vamos passar um path como parametro para a proxima tela
     Navigator.push(context,
-        MaterialPageRoute(builder: (builder) => CameraViewScreen(path: path)));
+        MaterialPageRoute(builder: (builder) => CameraViewScreen(path: fotoFile!.path)));
   }
 
   //*precisamos inicializar as daus variaveis '_cameraController' e 'cameraValue' no initState
@@ -59,7 +59,10 @@ class _CameraScreenState extends State<CameraScreen> {
               future: cameraValue,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return CameraPreview(_cameraController!);
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: CameraPreview(_cameraController!));
                 } else {
                   return Center(
                       //*spinkit = CircularProgressindicator personalizado
@@ -90,21 +93,16 @@ class _CameraScreenState extends State<CameraScreen> {
                         onPressed: () {},
                       ),
                       GestureDetector(
-                        onLongPress: () async {
-                          final path = join(
-                              (await getTemporaryDirectory()).path,
-                              '${DateTime.now()}.mp4');
-                              //! preciso salvar o path de alguma forma !!! esta incompleto aqui
-                          await _cameraController!.startVideoRecording();                          
-                          setState(() {
-                            isRecoring = true;
-                            videoPath = path;
+                        onLongPress: () async {                     
+                          await _cameraController!.startVideoRecording();                         
+                         setState(() {
+                            isRecoring = true;                            
                           });
                         },
 
                         //*onLongPressUp = para encerrar o longPress
                         onLongPressUp: () async {
-                          await _cameraController!.stopVideoRecording();
+                         videoFile = await _cameraController!.stopVideoRecording();
                           setState(() {
                             isRecoring = false;
                           });
@@ -112,7 +110,7 @@ class _CameraScreenState extends State<CameraScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (builder) => CameraVideoViewScreen(
-                                        path: videoPath,
+                                        path: videoFile!.path,
                                       )));
                         },
                         onTap: () {

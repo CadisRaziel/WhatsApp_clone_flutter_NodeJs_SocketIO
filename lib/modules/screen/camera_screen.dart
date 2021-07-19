@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nome_whatsclone/modules/screen/cameraVideoView_screen.dart';
 import 'package:nome_whatsclone/modules/screen/cameraView_screen.dart';
 
-
 //*Colocando uma variavel aqui ela fica global para usarmos em qualquer lugar(variavel global)
 //*vai colcoar todas as cameras do dispotivo disponivel em uma lista
 List<CameraDescription>? cameras;
@@ -20,18 +19,19 @@ class _CameraScreenState extends State<CameraScreen> {
   CameraController? _cameraController;
   Future<void>? cameraValue;
   bool isRecoring = false;
+  bool flash = false;
   String videoPath = '';
   XFile? fotoFile;
   XFile? videoFile;
 
-  
-
   //metodo para tirar a foto ao clicar no botão usando o package path_provider
-  void tirarFoto(BuildContext context) async {   
-    fotoFile = await _cameraController!.takePicture();    
+  void tirarFoto(BuildContext context) async {
+    fotoFile = await _cameraController!.takePicture();
     //*vamos passar um path como parametro para a proxima tela
-    Navigator.push(context,
-        MaterialPageRoute(builder: (builder) => CameraViewScreen(path: fotoFile!.path)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (builder) => CameraViewScreen(path: fotoFile!.path)));
   }
 
   //*precisamos inicializar as daus variaveis '_cameraController' e 'cameraValue' no initState
@@ -60,9 +60,9 @@ class _CameraScreenState extends State<CameraScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: CameraPreview(_cameraController!));
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: CameraPreview(_cameraController!));
                 } else {
                   return Center(
                       //*spinkit = CircularProgressindicator personalizado
@@ -86,23 +86,33 @@ class _CameraScreenState extends State<CameraScreen> {
                     children: [
                       IconButton(
                         icon: Icon(
-                          Icons.flash_off,
+                          //*condição do flash ligado e desligado
+                          flash ? Icons.flash_on : Icons.flash_off,
                           color: Colors.white,
                           size: 28,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            flash = !flash;
+                          });
+                          //*condição para ligar o flash e desligar o flash
+                          flash
+                              ? _cameraController!.setFlashMode(FlashMode.torch)
+                              : _cameraController!.setFlashMode(FlashMode.off);
+                        },
                       ),
                       GestureDetector(
-                        onLongPress: () async {                     
-                          await _cameraController!.startVideoRecording();                         
-                         setState(() {
-                            isRecoring = true;                            
+                        onLongPress: () async {
+                          await _cameraController!.startVideoRecording();
+                          setState(() {
+                            isRecoring = true;
                           });
                         },
 
                         //*onLongPressUp = para encerrar o longPress
                         onLongPressUp: () async {
-                         videoFile = await _cameraController!.stopVideoRecording();
+                          videoFile =
+                              await _cameraController!.stopVideoRecording();
                           setState(() {
                             isRecoring = false;
                           });

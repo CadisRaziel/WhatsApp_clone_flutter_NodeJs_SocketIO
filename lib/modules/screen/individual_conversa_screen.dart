@@ -44,7 +44,7 @@ class _IndividualPageState extends State<IndividualPage> {
   //*abrindo conexão com o ip do wifi
   void connect(){
   IO.Socket socket;
-  socket = IO.io('http://192.178.15.8:5000', <String, dynamic>{
+  socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
     'transports':['websocket'],
     'autoConnect': false,
   });

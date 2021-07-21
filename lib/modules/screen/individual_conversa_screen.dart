@@ -5,6 +5,8 @@ import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemEnviada_card.dar
 import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemRecebida_card.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 import 'package:nome_whatsclone/shared/theme/app_images.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage({Key? key, this.chatModel}) : super(key: key);
@@ -22,8 +24,12 @@ class _IndividualPageState extends State<IndividualPage> {
   bool emojiShowing = false;
   FocusNode focusNode = FocusNode();
 
-  void initSate() {
+
+@override
+//!cuidado ao escrever initState (eu havia escrito initStat e com isso ele não iniciava nada !!
+  void initState() {
     super.initState();
+    connect();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         setState(() {
@@ -31,6 +37,21 @@ class _IndividualPageState extends State<IndividualPage> {
         });
       }
     });
+    // connect();
+  }
+
+
+  //*abrindo conexão com o ip do wifi
+  void connect(){
+  IO.Socket socket;
+  socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
+    'transports':['websocket'],
+    'autoConnect': false,
+  });
+  socket.connect();
+  socket.emit('/test', 'hello');
+  socket.onConnect((data) => print('conectado'));
+  print(socket.connected);
   }
 
 //*_onEmojiSelected, _onBackspacePressed = controlam os emojis quando selecionado

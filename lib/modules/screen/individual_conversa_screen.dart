@@ -22,6 +22,7 @@ class IndividualPage extends StatefulWidget {
 class _IndividualPageState extends State<IndividualPage> {
   final TextEditingController _controller = TextEditingController();
   bool emojiShowing = false;
+  bool sendButton = false;
   FocusNode focusNode = FocusNode();
 
 
@@ -349,6 +350,18 @@ class _IndividualPageState extends State<IndividualPage> {
                                   child: TextFormField(
                                     focusNode: focusNode,
                                     controller: _controller,
+                                    //*onChanged = se eu digitar algo vai aparecer o icone para enviar, se eu nao digitar o icone de mandar audio permanece
+                                    onChanged: (value){
+                                      if(value.length > 0) {
+                                        setState(() {
+                                          sendButton = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          sendButton = false;
+                                        });
+                                      }
+                                    },
                                     textAlignVertical: TextAlignVertical.center,
                                     keyboardType: TextInputType.multiline,
                                     maxLines: 5,
@@ -413,7 +426,8 @@ class _IndividualPageState extends State<IndividualPage> {
                                   child: IconButton(
                                     onPressed: () {},
                                     icon: Icon(
-                                      Icons.mic,
+                                      //*condição do onChanged do textInput se o usuario digitar aparece o icone de enviar se ele nao digitar aparece o icone de mandar audio
+                                     sendButton ? Icons.send : Icons.mic,
                                       color: Colors.white,
                                     ),
                                   ),

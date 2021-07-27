@@ -3,8 +3,9 @@ import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/modules/screen/individual_conversa_screen.dart';
 
 class CustomCardWidget extends StatelessWidget {
-  const CustomCardWidget({Key? key, this.chatModel}) : super(key: key);
-
+  const CustomCardWidget({Key? key, this.chatModel, this.sourceChatCustom})
+      : super(key: key);
+  final ChatModel? sourceChatCustom;
   final ChatModel? chatModel;
 
   @override
@@ -13,7 +14,10 @@ class CustomCardWidget extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => IndividualPage(chatModel: chatModel),
+            builder: (context) => IndividualPage(
+              chatModel: chatModel,
+              sourceChatIndividual: sourceChatCustom,              
+            ),
           ),
         );
       },
@@ -24,8 +28,10 @@ class CustomCardWidget extends StatelessWidget {
               leading: CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.blueGrey,
-                child:
-                    Icon(chatModel!.isGroup ? (Icons.group) : (Icons.person), color: Colors.white,),
+                child: Icon(
+                  chatModel!.isGroup ? (Icons.group) : (Icons.person),
+                  color: Colors.white,
+                ),
               ),
               title: Text(
                 chatModel!.name,

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MensagemEnviadaCard extends StatelessWidget {
-  const MensagemEnviadaCard({Key? key}) : super(key: key);
+  const MensagemEnviadaCard({
+    Key? key,
+    this.message,
+    this.time
+  }) : super(key: key);
+  //! nunca deixe como required quando for enviar ou receber mensagem !
+  final String? message;
+  final String? time;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class MensagemEnviadaCard extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 10, right: 60, top: 5, bottom: 22),
                 child: Text(
-                  'oi',
+                  message!,
                   style: TextStyle(
                     fontSize: 16,
                   ),
@@ -38,7 +45,7 @@ class MensagemEnviadaCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '15:34',
+                      time!,
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                     SizedBox(

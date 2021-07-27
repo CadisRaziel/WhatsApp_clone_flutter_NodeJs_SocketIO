@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+
 import 'package:nome_whatsclone/Pages/camera_page.dart';
+import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/modules/screen/conversas_screen.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
 
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({
+    Key? key,
+    this.chatmodels,
+    this.sourceChatHome,
+  }) : super(key: key);
+  final List<ChatModel>? chatmodels;
+  final ChatModel? sourceChatHome;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -102,7 +111,10 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           //* aqui nós vamos colocar as paginas widgets referente a cada tab
           CameraPage(),
-          ConversasPage(),
+          ConversasPage(
+            chatmodels:  widget.chatmodels,
+            sourchChatConversas: widget.sourceChatHome,
+          ),
           Center(child: Text('STATUS')),
           Center(child: Text('CHAMADAS')),
         ],

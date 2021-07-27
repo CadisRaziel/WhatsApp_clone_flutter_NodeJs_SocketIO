@@ -7,6 +7,7 @@ class ChatModel {
   String time;
   String currentMessage;
   String status;
+  int? id;
   Widget? icon;
   bool isGroup;
   bool selectGroup;
@@ -17,6 +18,7 @@ class ChatModel {
     this.time = '',
     this.currentMessage = '',
     this.status = '',
+    this.id,
     this.icon,
     this.isGroup = false,
     this.selectGroup = false

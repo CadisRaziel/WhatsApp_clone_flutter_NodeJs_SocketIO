@@ -4,9 +4,11 @@ class MensagemRecebidaCard extends StatelessWidget {
   const MensagemRecebidaCard({
     Key? key,
     this.message,
+    this.time
   }) : super(key: key);
   //! nunca deixe como required quando for enviar ou receber mensagem !
   final String? message;
+  final String? time;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class MensagemRecebidaCard extends StatelessWidget {
                 bottom: 4,
                 right: 10,
                 child: Text(
-                  '15:50',
+                  time!,
                   style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
               )

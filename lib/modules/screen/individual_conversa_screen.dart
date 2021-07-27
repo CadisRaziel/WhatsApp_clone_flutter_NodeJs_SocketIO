@@ -29,6 +29,7 @@ class _IndividualPageState extends State<IndividualPage> {
   IO.Socket? socket;
   FocusNode focusNode = FocusNode();
   List<MessageModel> messages = [];
+  ScrollController _scrollController = ScrollController();
 
   @override
 //!cuidado ao escrever initState (eu havia escrito initStat e com isso ele não iniciava nada !!
@@ -62,6 +63,12 @@ class _IndividualPageState extends State<IndividualPage> {
       socket!.on('message', (msg) {
         print(msg);
         setMessage("destination", msg["message"]);
+        //*quando recebermos a mensagem elas vao subindo e deixando as mais recentes na tela, o _scrollController.animateTo é reponsavel por isso !
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       });
     });
     print(socket!.connected);
@@ -78,9 +85,9 @@ class _IndividualPageState extends State<IndividualPage> {
   //*função para armazenar as mensagens para poder apresenta-las(vamos colocar o setMessage no backend 'sendMessage')
   void setMessage(String typee, String messagee) {
     MessageModel messageModel = MessageModel(
-      type: typee,
-      mesage: messagee,
-    );
+        type: typee,
+        mesage: messagee,
+        time: DateTime.now().toString().substring(10, 16));
     setState(() {
       messages.add(messageModel);
     });
@@ -331,23 +338,31 @@ class _IndividualPageState extends State<IndividualPage> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: WillPopScope(
-                child: Stack(
+                child: Column(
                   children: [
                     //*vamos adicionar as conversas aqui no ListView
-                    Container(
+                    Expanded(
                       //* -143 para que as mensagens ao rolar nao fique atras da caixa de texto(textFormField), elas sumam ao chegar nela
-                      height: MediaQuery.of(context).size.height - 143,
+                      // height: MediaQuery.of(context).size.height - 143,
                       child: ListView.builder(
+                        controller: _scrollController,
                         shrinkWrap: true,
-                        itemCount: messages.length ,
+                        itemCount: messages.length + 1,
                         itemBuilder: (context, index) {
+                          if (index == messages.length) {
+                            return Container(
+                              height: 70,
+                            );
+                          }
                           if (messages[index].type == "source") {
                             return MensagemEnviadaCard(
                               message: messages[index].mesage,
+                              time: messages[index].time,
                             );
                           } else {
                             return MensagemRecebidaCard(
                               message: messages[index].mesage,
+                              time: messages[index].time,
                             );
                           }
                         },
@@ -355,122 +370,138 @@ class _IndividualPageState extends State<IndividualPage> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                //* -55 para ele aparecer na tela, va testando !!
-                                width: MediaQuery.of(context).size.width - 55,
-                                //* repare que com o 'Card' eu tenho o mesmo resultado do InputDecoration, porém fora do TextFormField !!
-                                child: Card(
-                                  margin: EdgeInsets.only(
-                                      left: 5, right: 2, bottom: 8),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  child: TextFormField(
-                                    focusNode: focusNode,
-                                    controller: _controller,
-                                    //*onChanged = se eu digitar algo vai aparecer o icone para enviar, se eu nao digitar o icone de mandar audio permanece
-                                    onChanged: (value) {
-                                      if (value.length > 0) {
-                                        setState(() {
-                                          sendButton = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          sendButton = false;
-                                        });
-                                      }
-                                    },
-                                    textAlignVertical: TextAlignVertical.center,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: 5,
-                                    minLines: 1,
-                                    decoration: InputDecoration(
-                                      //*o InputBorder.none tira aquela linha do InputDecoratio aonde indica para digitar o texto
-                                      border: InputBorder.none,
-                                      hintText: 'Digite uma mensagem',
-                                      contentPadding: EdgeInsets.all(5),
-                                      prefixIcon: IconButton(
-                                        icon: Icon(
-                                          Icons.emoji_emotions_outlined,
-                                          color: Colors.grey,
-                                        ),
-                                        onPressed: () {
-                                          //*o focusnode vai fazer que quando clicarmos no botão de emotion, o teclado não abra !!!
-                                          focusNode.unfocus();
-                                          focusNode.canRequestFocus = false;
+                      child: Container(
+                        height: 70,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  //* -55 para ele aparecer na tela, va testando !!
+                                  width: MediaQuery.of(context).size.width - 55,
+                                  //* repare que com o 'Card' eu tenho o mesmo resultado do InputDecoration, porém fora do TextFormField !!
+                                  child: Card(
+                                    margin: EdgeInsets.only(
+                                        left: 5, right: 2, bottom: 8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: TextFormField(
+                                      focusNode: focusNode,
+                                      controller: _controller,
+                                      //*onChanged = se eu digitar algo vai aparecer o icone para enviar, se eu nao digitar o icone de mandar audio permanece
+                                      onChanged: (value) {
+                                        if (value.length > 0) {
                                           setState(() {
-                                            emojiShowing = !emojiShowing;
+                                            sendButton = true;
                                           });
-                                        },
-                                      ),
-                                      suffixIcon: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              //* showModalBottomSheet = é do proprio flutter, e abre uma caixa de dialogo
-                                              //* por cima da tela atual, mostrando icones ou coisa que queremos, e deixando a tela de traz sem foco e escura clara
-                                              //*podemos criar uma função de Widget e colocar o que quisermos dentro
-                                              showModalBottomSheet(
-                                                  //! colocamos a backgroundColor aqui para tirar a cor de fundo do container, e ficar somente a do card
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder: (builder) =>
-                                                      bottomClips());
-                                            },
-                                            icon: Icon(
-                                              Icons.attach_file,
-                                              color: Colors.grey,
+                                        } else {
+                                          setState(() {
+                                            sendButton = false;
+                                          });
+                                        }
+                                      },
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: 5,
+                                      minLines: 1,
+                                      decoration: InputDecoration(
+                                        //*o InputBorder.none tira aquela linha do InputDecoratio aonde indica para digitar o texto
+                                        border: InputBorder.none,
+                                        hintText: 'Digite uma mensagem',
+                                        contentPadding: EdgeInsets.all(5),
+                                        prefixIcon: IconButton(
+                                          icon: Icon(
+                                            Icons.emoji_emotions_outlined,
+                                            color: Colors.grey,
+                                          ),
+                                          onPressed: () {
+                                            //*o focusnode vai fazer que quando clicarmos no botão de emotion, o teclado não abra !!!
+                                            focusNode.unfocus();
+                                            focusNode.canRequestFocus = false;
+                                            setState(() {
+                                              emojiShowing = !emojiShowing;
+                                            });
+                                          },
+                                        ),
+                                        suffixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                //* showModalBottomSheet = é do proprio flutter, e abre uma caixa de dialogo
+                                                //* por cima da tela atual, mostrando icones ou coisa que queremos, e deixando a tela de traz sem foco e escura clara
+                                                //*podemos criar uma função de Widget e colocar o que quisermos dentro
+                                                showModalBottomSheet(
+                                                    //! colocamos a backgroundColor aqui para tirar a cor de fundo do container, e ficar somente a do card
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    context: context,
+                                                    builder: (builder) =>
+                                                        bottomClips());
+                                              },
+                                              icon: Icon(
+                                                Icons.attach_file,
+                                                color: Colors.grey,
+                                              ),
                                             ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(Icons.camera_alt,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
+                                            IconButton(
+                                              onPressed: () {},
+                                              icon: Icon(Icons.camera_alt,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 2, right: 2, bottom: 8),
-                                child: CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: AppColors.accent,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      //*operação para envio e recebimento de mensagem
-                                      if (sendButton) {
-                                        sendMenssage(
-                                          _controller.text,
-                                          widget.sourceChatIndividual!.id!,
-                                          widget.chatModel!.id!,
-                                        );
-                                        //*quando enviar a mensagem ele vai limpar o inputtext
-                                        _controller.clear();
-                                      }
-                                    },
-                                    icon: Icon(
-                                      //*condição do onChanged do textInput se o usuario digitar aparece o icone de enviar se ele nao digitar aparece o icone de mandar audio
-                                      sendButton ? Icons.send : Icons.mic,
-                                      color: Colors.white,
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 2, right: 2, bottom: 8),
+                                  child: CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: AppColors.accent,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        //*operação para envio e recebimento de mensagem
+                                        if (sendButton) {
+                                          //*quando enviarmos mensagem elas vao subindo e deixando as mais recentes na tela, o _scrollController.animateTo é reponsavel por isso !
+                                          _scrollController.animateTo(
+                                            _scrollController
+                                                .position.maxScrollExtent,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                          );
+                                          sendMenssage(
+                                            _controller.text,
+                                            widget.sourceChatIndividual!.id!,
+                                            widget.chatModel!.id!,
+                                          );
+                                          //*quando enviar a mensagem ele vai limpar o inputtext
+                                          _controller.clear();
+                                          setState(() {
+                                            //*quando digitarmos e apertar para enviar ele volta a aparecer o icone do microfone
+                                            sendButton = false;
+                                          });
+                                        }
+                                      },
+                                      icon: Icon(
+                                        //*condição do onChanged do textInput se o usuario digitar aparece o icone de enviar se ele nao digitar aparece o icone de mandar audio
+                                        sendButton ? Icons.send : Icons.mic,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          emojiShowing ? emojiSelected() : Container()
-                        ],
+                              ],
+                            ),
+                            emojiShowing ? emojiSelected() : Container()
+                          ],
+                        ),
                       ),
                     )
                   ],

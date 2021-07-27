@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class MensagemRecebidaCard extends StatelessWidget {
   const MensagemRecebidaCard({
     Key? key,
-    required this.message,
+    this.message,
   }) : super(key: key);
-  final String message;
+  //! nunca deixe como required quando for enviar ou receber mensagem !
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class MensagemRecebidaCard extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 10, right: 50, top: 5, bottom: 22),
                 child: Text(
-                  message,
+                  message!,
                   style: TextStyle(
                     fontSize: 16,
                   ),

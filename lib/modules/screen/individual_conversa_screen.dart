@@ -28,7 +28,7 @@ class _IndividualPageState extends State<IndividualPage> {
   bool sendButton = false;
   IO.Socket? socket;
   FocusNode focusNode = FocusNode();
-  List<MessageModel> message = [];
+  List<MessageModel> messages = [];
 
   @override
 //!cuidado ao escrever initState (eu havia escrito initStat e com isso ele não iniciava nada !!
@@ -45,31 +45,23 @@ class _IndividualPageState extends State<IndividualPage> {
     // connect();
   }
 
-  //*função para armazenar as mensagens para poder apresenta-las(vamos colocar o setMessage no backend 'sendMessage')
-  void setMessage(String typee, String messagee) {
-    MessageModel messageModel = MessageModel(type: typee, mesage: messagee);
-    setState(() {
-      message.add(messageModel);
-    });
-  }
-
 //! vera que criamos varias variaveis 'source' cada arquivo tem seu nome 'sourceChatHome'
 //! o motivo disso é para conseguirmos criar multiplos clientes para podermos testarmos sozinhos o envio e recebimento de mensage
 //! repare que no nodejs incluimos isso !
 
   //*abrindo conexão com o ip do wifi
   void connect() {
-    socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
+    socket = IO.io('http://192.168.15.13:5000', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
     socket!.connect();
-    socket!.emit('/entrar', widget.sourceChatIndividual!.id);
+    socket!.emit('entrar', widget.sourceChatIndividual!.id);
     socket!.onConnect((data) {
       print('conectado');
       socket!.on('message', (msg) {
         print(msg);
-        setMessage('destination', msg['message']);
+        setMessage("destination", msg["message"]);
       });
     });
     print(socket!.connected);
@@ -78,15 +70,20 @@ class _IndividualPageState extends State<IndividualPage> {
   //*enviar mensagens
   void sendMenssage(String message, int sourceId, int targetId) {
     //*passando a função'setMessage' que armazena as mensagens aqui dentro para elas serem apresentadas
-    setMessage('source', message);
-    socket!.emit(
-      'message',
-      {
-        'Message': message,
-        'sourceId': sourceId,
-        'targetId': targetId,
-      },
+    setMessage("source", message);
+    socket!.emit("message",
+        {"message": message, "sourceId": sourceId, "targetId": targetId});
+  }
+
+  //*função para armazenar as mensagens para poder apresenta-las(vamos colocar o setMessage no backend 'sendMessage')
+  void setMessage(String typee, String messagee) {
+    MessageModel messageModel = MessageModel(
+      type: typee,
+      mesage: messagee,
     );
+    setState(() {
+      messages.add(messageModel);
+    });
   }
 
 //*_onEmojiSelected, _onBackspacePressed = controlam os emojis quando selecionado
@@ -342,15 +339,15 @@ class _IndividualPageState extends State<IndividualPage> {
                       height: MediaQuery.of(context).size.height - 143,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: message.length,
+                        itemCount: messages.length ,
                         itemBuilder: (context, index) {
-                          if (message[index].type == 'source') {
+                          if (messages[index].type == "source") {
                             return MensagemEnviadaCard(
-                              message: message[index].mesage,
+                              message: messages[index].mesage,
                             );
                           } else {
                             return MensagemRecebidaCard(
-                              message: message[index].mesage,
+                              message: messages[index].mesage,
                             );
                           }
                         },

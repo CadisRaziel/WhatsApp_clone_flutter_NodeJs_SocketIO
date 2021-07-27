@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MensagemRecebidaCard extends StatelessWidget {
-  const MensagemRecebidaCard({ Key? key }) : super(key: key);
+  const MensagemRecebidaCard({
+    Key? key,
+    required this.message,
+  }) : super(key: key);
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,7 @@ class MensagemRecebidaCard extends StatelessWidget {
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          shadowColor: Colors.blueGrey,          
+          shadowColor: Colors.blueGrey,
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           //*Stack aqui pois tem o texto que o usuario digita a hora e a verificação
           child: Stack(
@@ -25,7 +29,7 @@ class MensagemRecebidaCard extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 10, right: 50, top: 5, bottom: 22),
                 child: Text(
-                  'Tudo bem ?',
+                  message,
                   style: TextStyle(
                     fontSize: 16,
                   ),

@@ -1,15 +1,18 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
+import 'package:nome_whatsclone/model/mensagem_model.dart';
 import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemEnviada_card.dart';
 import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemRecebida_card.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 import 'package:nome_whatsclone/shared/theme/app_images.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-
 class IndividualPage extends StatefulWidget {
-  const IndividualPage({Key? key, this.chatModel}) : super(key: key);
+  const IndividualPage({Key? key, this.chatModel, this.sourceChatIndividual})
+      : super(key: key);
+
+  final ChatModel? sourceChatIndividual;
 
   //* usamos o chatModel aqui para passar como parametro na rota do 'custom_card' no navigator.push
   //* como na tela 'custom_card' é um stateless e a variavel final chatModel esta la, quando passamos para ca no statefull devemos por um widget antes
@@ -23,10 +26,11 @@ class _IndividualPageState extends State<IndividualPage> {
   final TextEditingController _controller = TextEditingController();
   bool emojiShowing = false;
   bool sendButton = false;
+  IO.Socket? socket;
   FocusNode focusNode = FocusNode();
+  List<MessageModel> message = [];
 
-
-@override
+  @override
 //!cuidado ao escrever initState (eu havia escrito initStat e com isso ele não iniciava nada !!
   void initState() {
     super.initState();
@@ -41,18 +45,48 @@ class _IndividualPageState extends State<IndividualPage> {
     // connect();
   }
 
+  //*função para armazenar as mensagens para poder apresenta-las(vamos colocar o setMessage no backend 'sendMessage')
+  void setMessage(String typee, String messagee) {
+    MessageModel messageModel = MessageModel(type: typee, mesage: messagee);
+    setState(() {
+      message.add(messageModel);
+    });
+  }
+
+//! vera que criamos varias variaveis 'source' cada arquivo tem seu nome 'sourceChatHome'
+//! o motivo disso é para conseguirmos criar multiplos clientes para podermos testarmos sozinhos o envio e recebimento de mensage
+//! repare que no nodejs incluimos isso !
 
   //*abrindo conexão com o ip do wifi
-  void connect(){
-  IO.Socket socket;
-  socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
-    'transports':['websocket'],
-    'autoConnect': false,
-  });
-  socket.connect();
-  socket.emit('/test', 'hello');
-  socket.onConnect((data) => print('conectado'));
-  print(socket.connected);
+  void connect() {
+    socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+    socket!.connect();
+    socket!.emit('/entrar', widget.sourceChatIndividual!.id);
+    socket!.onConnect((data) {
+      print('conectado');
+      socket!.on('message', (msg) {
+        print(msg);
+        setMessage('destination', msg['message']);
+      });
+    });
+    print(socket!.connected);
+  }
+
+  //*enviar mensagens
+  void sendMenssage(String message, int sourceId, int targetId) {
+    //*passando a função'setMessage' que armazena as mensagens aqui dentro para elas serem apresentadas
+    setMessage('source', message);
+    socket!.emit(
+      'message',
+      {
+        'Message': message,
+        'sourceId': sourceId,
+        'targetId': targetId,
+      },
+    );
   }
 
 //*_onEmojiSelected, _onBackspacePressed = controlam os emojis quando selecionado
@@ -306,28 +340,20 @@ class _IndividualPageState extends State<IndividualPage> {
                     Container(
                       //* -143 para que as mensagens ao rolar nao fique atras da caixa de texto(textFormField), elas sumam ao chegar nela
                       height: MediaQuery.of(context).size.height - 143,
-                      child: ListView(
+                      child: ListView.builder(
                         shrinkWrap: true,
-                        children: [
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                          MensagemEnviadaCard(),
-                          MensagemRecebidaCard(),
-                        ],
+                        itemCount: message.length,
+                        itemBuilder: (context, index) {
+                          if (message[index].type == 'source') {
+                            return MensagemEnviadaCard(
+                              message: message[index].mesage,
+                            );
+                          } else {
+                            return MensagemRecebidaCard(
+                              message: message[index].mesage,
+                            );
+                          }
+                        },
                       ),
                     ),
                     Align(
@@ -351,8 +377,8 @@ class _IndividualPageState extends State<IndividualPage> {
                                     focusNode: focusNode,
                                     controller: _controller,
                                     //*onChanged = se eu digitar algo vai aparecer o icone para enviar, se eu nao digitar o icone de mandar audio permanece
-                                    onChanged: (value){
-                                      if(value.length > 0) {
+                                    onChanged: (value) {
+                                      if (value.length > 0) {
                                         setState(() {
                                           sendButton = true;
                                         });
@@ -424,10 +450,21 @@ class _IndividualPageState extends State<IndividualPage> {
                                   radius: 25,
                                   backgroundColor: AppColors.accent,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      //*operação para envio e recebimento de mensagem
+                                      if (sendButton) {
+                                        sendMenssage(
+                                          _controller.text,
+                                          widget.sourceChatIndividual!.id!,
+                                          widget.chatModel!.id!,
+                                        );
+                                        //*quando enviar a mensagem ele vai limpar o inputtext
+                                        _controller.clear();
+                                      }
+                                    },
                                     icon: Icon(
                                       //*condição do onChanged do textInput se o usuario digitar aparece o icone de enviar se ele nao digitar aparece o icone de mandar audio
-                                     sendButton ? Icons.send : Icons.mic,
+                                      sendButton ? Icons.send : Icons.mic,
                                       color: Colors.white,
                                     ),
                                   ),

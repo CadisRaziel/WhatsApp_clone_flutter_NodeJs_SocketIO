@@ -69,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                 MaterialPageRoute(
                     builder: (builder) => HomeScreen(
                           chatmodels: chatmodel,  
+                          sourceChatHome: sourceChat,
                         )));
           },
           child: ContatoButton(

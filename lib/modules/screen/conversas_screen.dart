@@ -5,15 +5,16 @@ import 'package:nome_whatsclone/modules/CustomUI/custom_card.dart';
 import 'contatos_screen.dart';
 
 class ConversasPage extends StatefulWidget {
-  const ConversasPage({Key? key, this.chatmodels}) : super(key: key);
+  const ConversasPage({Key? key, this.chatmodels, this.sourchChatConversas})
+      : super(key: key);
   final List<ChatModel>? chatmodels;
+  final ChatModel? sourchChatConversas;
 
   @override
   _ConversasPageState createState() => _ConversasPageState();
 }
 
 class _ConversasPageState extends State<ConversasPage> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +30,14 @@ class _ConversasPageState extends State<ConversasPage> {
         child: Icon(Icons.chat),
       ),
       body: ListView.builder(
-          itemCount: widget.chatmodels!.length,
-          itemBuilder: (BuildContext context, index) => SingleChildScrollView(
-              child: CustomCardWidget(chatModel: widget.chatmodels![index]))),
+        itemCount: widget.chatmodels!.length,
+        itemBuilder: (BuildContext context, index) => SingleChildScrollView(
+          child: CustomCardWidget(
+            chatModel: widget.chatmodels![index],
+            sourceChatCustom: widget.sourchChatConversas,
+          ),
+        ),
+      ),
     );
   }
 }

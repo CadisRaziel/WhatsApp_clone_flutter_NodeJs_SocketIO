@@ -338,7 +338,7 @@ class _IndividualPageState extends State<IndividualPage> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: WillPopScope(
-                child: Column(
+                child: Column(                  
                   children: [
                     //*vamos adicionar as conversas aqui no ListView
                     Expanded(
@@ -371,11 +371,10 @@ class _IndividualPageState extends State<IndividualPage> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        //! corrigir esse height !!!
-                        height: MediaQuery.of(context).size.height / 2,
+                        //! corrigir esse height, pois ele nao abre o teclado de emojis !!!
+                        height: 70,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          
+                          mainAxisAlignment: MainAxisAlignment.end,                          
                           children: [
                             Row(
                               children: [

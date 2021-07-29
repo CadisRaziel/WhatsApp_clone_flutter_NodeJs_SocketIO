@@ -24,4 +24,24 @@ class TextStyles {
   static final subTitleContatos = GoogleFonts.openSans(    
     fontSize: 13,     
   );
+  static final status = GoogleFonts.openSans(             
+    fontWeight: FontWeight.bold, 
+    color: Colors.black
+  );
+  static final substatus = GoogleFonts.openSans(    
+    fontSize: 13,     
+    color: Colors.grey[900]
+  );
+  static final updateStatus = GoogleFonts.openSans(    
+    fontSize: 13,
+    fontWeight: FontWeight.bold,    
+  );
+  static final outrosStatus = GoogleFonts.openSans(    
+    fontSize: 15,
+    fontWeight: FontWeight.bold,    
+  );
+  static final horaStatus = GoogleFonts.openSans(    
+    fontSize: 14,
+    color: Colors.grey[900]        
+  );
 }

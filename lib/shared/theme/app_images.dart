@@ -7,4 +7,5 @@ class AppImages {
   static const mulher = "assets/images/mulher.jpeg"; 
   static const darkside = "assets/images/darkside.jpg"; 
   static const vitor = "assets/images/vitor.jpg";
+  static const telaInicial = "assets/images/landing.png";
 }

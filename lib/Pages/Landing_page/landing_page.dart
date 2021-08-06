@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nome_whatsclone/Pages/Country_login_page/country_login_number_page.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 import 'package:nome_whatsclone/shared/theme/app_images.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
@@ -56,7 +57,14 @@ class LandingScreen extends StatelessWidget {
                 height: 25,
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => CountryNumberPage()),
+                    (route) => false,
+                  );
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width - 110,
                   height: 50,

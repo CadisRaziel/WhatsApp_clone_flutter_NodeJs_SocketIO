@@ -372,7 +372,7 @@ class _IndividualPageState extends State<IndividualPage> {
                       alignment: Alignment.bottomCenter,
                       child: Container(
                         //! corrigir esse height, pois ele nao abre o teclado de emojis !!!
-                        height: 70,
+                        height: 60,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,                          
                           children: [

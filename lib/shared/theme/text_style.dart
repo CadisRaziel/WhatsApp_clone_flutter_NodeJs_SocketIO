@@ -57,4 +57,42 @@ class TextStyles {
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
+  static final titleTelaCountry = GoogleFonts.openSans(    
+    color: AppColors.accent,
+    fontWeight: FontWeight.w700,
+    wordSpacing: 1,
+    fontSize: 18
+  );
+  static final verifyTelaCountry = GoogleFonts.openSans(        
+    fontSize: 13.5
+  );
+  static final whatsMyNumberTelaCountry = GoogleFonts.openSans(        
+    fontSize: 12.8,
+    color: Colors.cyan[800]
+  );
+  static final paisTelaCountry = GoogleFonts.openSans(        
+    fontSize: 16,    
+  );
+  static final countryPage = GoogleFonts.openSans(        
+    color: AppColors.accent,
+    fontWeight: FontWeight.w600,
+    fontSize: 18,
+    wordSpacing: 1
+  );
+  static final countryCode = GoogleFonts.openSans(         
+    fontSize: 15,   
+  );
+  static final countryCodeMais = GoogleFonts.openSans(         
+    fontSize: 18,   
+  );
+  static final countryProximo = GoogleFonts.openSans(         
+    fontWeight: FontWeight.w600
+  );
+  static final countryAlert = GoogleFonts.openSans(         
+    fontSize: 14
+  );
+  static final countryAlertNumber = GoogleFonts.openSans(         
+    fontSize: 14,
+    fontWeight: FontWeight.w500 
+  );
 }

@@ -95,4 +95,21 @@ class TextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w500 
   );
+  static final otpCountry = GoogleFonts.openSans(    
+    color: AppColors.accent,     
+    fontSize: 16.5
+  );
+  static final otpCountry1 = GoogleFonts.openSans(    
+    color: Colors.black, 
+    fontSize: 14.5
+  );
+  static final otpCountry2 = GoogleFonts.openSans(    
+    color: Colors.black, 
+    fontSize: 14.5,
+    fontWeight: FontWeight.bold
+  );
+  static final otpCountry3 = GoogleFonts.openSans(    
+    color: AppColors.accent, 
+    fontSize: 14.5
+  );
 }

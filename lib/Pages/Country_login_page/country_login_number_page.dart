@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nome_whatsclone/Pages/Country_login_page/country.dart';
+import 'package:nome_whatsclone/Pages/otp_page/otp_page_sms.dart';
 import 'package:nome_whatsclone/model/country_model.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
@@ -175,6 +176,14 @@ class _CountryNumberPageState extends State<CountryNumberPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (builder) => OtpPageSMS(
+                      //*repare que as variaveis criadas em OtpPageSMS vao ser inseridas aqui
+                      //*com isso nós dissemos que elas vao atribuir variaveis dessa pagina countryLogin
+                      //*pois ao irmos para a tela OtpPageSMS os dados dessa tela seráo enviados para a tela de OtpPageSMS
+                          countryCodeOTP: countryCode,
+                          numberOTP: _controller.text,
+                        )));
               },
               child: Text(
                 'Ok',
@@ -234,7 +243,7 @@ class _CountryNumberPageState extends State<CountryNumberPage> {
         ),
         centerTitle: true,
         actions: [
-          Icon(Icons.more_vert, color: Colors.black),
+          Icon(Icons.more_vert, color: AppColors.accent),
         ],
       ),
       body: Container(
@@ -268,7 +277,7 @@ class _CountryNumberPageState extends State<CountryNumberPage> {
             ),
             InkWell(
               onTap: () {
-                if(_controller.text.length < 10){
+                if (_controller.text.length < 10) {
                   showDialogError();
                 } else {
                   showDialogEdit();

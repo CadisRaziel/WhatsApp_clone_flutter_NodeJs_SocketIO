@@ -1,8 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nome_whatsclone/modules/screen/cameraVideoView_screen.dart';
-import 'package:nome_whatsclone/modules/screen/cameraView_screen.dart';
+
+
+import 'cameraVideoView_screen.dart';
+import 'cameraView_screen.dart';
 
 //*Colocando uma variavel aqui ela fica global para usarmos em qualquer lugar(variavel global)
 //*vai colcoar todas as cameras do dispotivo disponivel em uma lista

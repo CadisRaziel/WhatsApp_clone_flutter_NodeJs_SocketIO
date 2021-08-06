@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nome_whatsclone/Pages/chat_page.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/modules/CustomUI/custom_contatos_button_card.dart';
+
+import 'chat_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);

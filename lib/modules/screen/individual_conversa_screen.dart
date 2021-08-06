@@ -52,7 +52,7 @@ class _IndividualPageState extends State<IndividualPage> {
 
   //*abrindo conexão com o ip do wifi
   void connect() {
-    socket = IO.io('http://192.168.15.13:5000', <String, dynamic>{
+    socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
@@ -338,7 +338,7 @@ class _IndividualPageState extends State<IndividualPage> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: WillPopScope(
-                child: Column(
+                child: Column(                  
                   children: [
                     //*vamos adicionar as conversas aqui no ListView
                     Expanded(
@@ -371,9 +371,10 @@ class _IndividualPageState extends State<IndividualPage> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: 70,
+                        //! corrigir esse height, pois ele nao abre o teclado de emojis !!!
+                        height: 60,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,                          
                           children: [
                             Row(
                               children: [

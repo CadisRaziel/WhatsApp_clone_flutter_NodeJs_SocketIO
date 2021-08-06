@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:nome_whatsclone/Pages/camera_page.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/modules/screen/conversas_screen.dart';
 import 'package:nome_whatsclone/shared/theme/text_style.dart';
+
+import 'camera_page.dart';
+import 'status_page.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -115,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen>
             chatmodels:  widget.chatmodels,
             sourchChatConversas: widget.sourceChatHome,
           ),
-          Center(child: Text('STATUS')),
+          StatusPage(),
           Center(child: Text('CHAMADAS')),
         ],
       ),

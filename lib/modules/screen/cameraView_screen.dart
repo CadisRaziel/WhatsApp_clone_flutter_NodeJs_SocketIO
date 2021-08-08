@@ -1,12 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 
 class CameraViewScreen extends StatelessWidget {
-  const CameraViewScreen({Key? key, this.path}) : super(key: key);
+  const CameraViewScreen({
+    Key? key,
+    required this.path,
+    required this.onImageSend,
+  }) : super(key: key);
 
-  final String? path;
+  final String path;
+  final Function onImageSend;
+  static TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +61,7 @@ class CameraViewScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height - 150,
               child: Image.file(
-                File(path!),
+                File(path),
                 fit: BoxFit.cover,
               ),
             ),
@@ -65,6 +72,7 @@ class CameraViewScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: TextFormField(
+                  controller: _controller,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 17,
@@ -83,10 +91,21 @@ class CameraViewScreen extends StatelessWidget {
                       color: Colors.white,
                       fontSize: 17,
                     ),
-                    suffixIcon: CircleAvatar(
-                      radius: 27,
-                      child: Icon(Icons.check, color: Colors.white, size: 27),
-                      backgroundColor: AppColors.accent,
+                    suffixIcon: InkWell(
+                      onTap: (){
+                        //*repare que eu passei o path como parametro aqui,
+                        //*porém antes eu tinha colocado um VoidCallBack, porém ele não aceita parametros !!
+                        //*com isso tive que trocar para Function
+                        onImageSend(
+                          path,
+                          _controller.text.trim()
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 27,
+                        child: Icon(Icons.check, color: Colors.white, size: 27),
+                        backgroundColor: AppColors.accent,
+                      ),
                     )
                   ),
                 ),

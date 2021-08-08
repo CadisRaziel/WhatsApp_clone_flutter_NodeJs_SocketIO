@@ -62,7 +62,7 @@ class _IndividualPageState extends State<IndividualPage> {
 
   //*abrindo conexão com o ip do wifi
   void connect() {
-    socket = IO.io('http://192.168.15.9:5000', <String, dynamic>{
+    socket = IO.io('http://192.192.0.0:5000', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
@@ -101,7 +101,7 @@ class _IndividualPageState extends State<IndividualPage> {
     });
     //*repare que colocamos nosso ip de internet junto com o 'routes' e o 'addimage' criado com nodejs
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://192.168.15.9:5000/routes/addimage'));
+        'POST', Uri.parse('http://192.192.0.0:5000/routes/addimage'));
     request.files.add(await http.MultipartFile.fromPath('img', path));
     request.headers.addAll({
       "Content-type": "multipart/form-data",

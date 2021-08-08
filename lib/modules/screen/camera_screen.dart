@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
 import 'cameraVideoView_screen.dart';
 import 'cameraView_screen.dart';
 
@@ -11,7 +10,8 @@ import 'cameraView_screen.dart';
 List<CameraDescription>? cameras;
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key? key}) : super(key: key);
+  const CameraScreen({Key? key, this.onImageSendCamera}) : super(key: key);
+  final Function? onImageSendCamera;
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -32,9 +32,14 @@ class _CameraScreenState extends State<CameraScreen> {
     fotoFile = await _cameraController!.takePicture();
     //*vamos passar um path como parametro para a proxima tela
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (builder) => CameraViewScreen(path: fotoFile!.path)));
+      context,
+      MaterialPageRoute(
+        builder: (builder) => CameraViewScreen(
+          path: fotoFile!.path,
+          onImageSend: widget.onImageSendCamera!,
+        ),
+      ),
+    );
   }
 
   //*precisamos inicializar as daus variaveis '_cameraController' e 'cameraValue' no initState

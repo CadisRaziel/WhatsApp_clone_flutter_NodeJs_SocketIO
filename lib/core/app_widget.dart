@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:nome_whatsclone/Pages/Landing_page/landing_page.dart';
+import 'package:nome_whatsclone/Pages/Tabs_page/login_page.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 
 class MyApp extends StatelessWidget {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         accentColor: AppColors.accent
       ),
      debugShowCheckedModeBanner: false,
-     home: LandingScreen(),     
+     home: LoginPage(),     
     );
   }
 }

@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nome_whatsclone/model/chat_model.dart';
 import 'package:nome_whatsclone/model/mensagem_model.dart';
-import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemEnviada_card.dart';
-import 'package:nome_whatsclone/modules/CustomUI/custom_mensagemRecebida_card.dart';
+import 'package:nome_whatsclone/modules/CustomUI/Enviar_Receber_FotoCustomUI/custom_enviar_foto_card.dart';
+import 'package:nome_whatsclone/modules/CustomUI/Enviar_receber_MensagemCustomUI/custom_mensagemEnviada_card.dart';
+import 'package:nome_whatsclone/modules/CustomUI/Enviar_receber_MensagemCustomUI/custom_mensagemRecebida_card.dart';
+import 'package:nome_whatsclone/modules/screen/cameraView_screen.dart';
+import 'package:nome_whatsclone/modules/screen/camera_screen.dart';
 import 'package:nome_whatsclone/shared/theme/app_colors.dart';
 import 'package:nome_whatsclone/shared/theme/app_images.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:http/http.dart' as http;
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage({Key? key, this.chatModel, this.sourceChatIndividual})
@@ -30,6 +37,9 @@ class _IndividualPageState extends State<IndividualPage> {
   FocusNode focusNode = FocusNode();
   List<MessageModel> messages = [];
   ScrollController _scrollController = ScrollController();
+  ImagePicker _picker = ImagePicker();
+  XFile? file;
+  int popTime = 0;
 
   @override
 //!cuidado ao escrever initState (eu havia escrito initStat e com isso ele não iniciava nada !!
@@ -62,7 +72,11 @@ class _IndividualPageState extends State<IndividualPage> {
       print('conectado');
       socket!.on('message', (msg) {
         print(msg);
-        setMessage("destination", msg["message"]);
+        setMessage(
+          "destination",
+          msg["message"],
+          msg["pathId"],
+        );
         //*quando recebermos a mensagem elas vao subindo e deixando as mais recentes na tela, o _scrollController.animateTo é reponsavel por isso !
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -74,19 +88,61 @@ class _IndividualPageState extends State<IndividualPage> {
     print(socket!.connected);
   }
 
+  Future<void> sendImage(String path, String message) async {
+    print('$message');
+
+    //*o 'poptime' foi criado para que quando clicamos na galeria ou tiramos uma foto e enviamos essa foto, ela deve ser enviada para o chat
+    //*e voltar para a tela do chat !!
+    for (int i = 0; i < popTime; i++) {
+      Navigator.of(context).pop();
+    }
+    setState(() {
+      popTime = 0;
+    });
+    //*repare que colocamos nosso ip de internet junto com o 'routes' e o 'addimage' criado com nodejs
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://192.168.15.9:5000/routes/addimage'));
+    request.files.add(await http.MultipartFile.fromPath('img', path));
+    request.headers.addAll({
+      "Content-type": "multipart/form-data",
+    });
+    http.StreamedResponse response = await request.send();
+    var httpResponse = await http.Response.fromStream(response);
+    var data = jsonDecode(httpResponse.body);
+    print(data['path']);
+    setMessage("source", message, path);
+    socket!.emit(
+      "message",
+      {
+        "message": message,
+        "sourceId": widget.sourceChatIndividual!.id,
+        "targetId": widget.chatModel!.id,
+        "path": data['path']
+      },
+    );
+  }
+
   //*enviar mensagens
-  void sendMenssage(String message, int sourceId, int targetId) {
+  void sendMenssage(String message, int sourceId, int targetId, String path) {
     //*passando a função'setMessage' que armazena as mensagens aqui dentro para elas serem apresentadas
-    setMessage("source", message);
-    socket!.emit("message",
-        {"message": message, "sourceId": sourceId, "targetId": targetId});
+    setMessage("source", message, path);
+    socket!.emit(
+      "message",
+      {
+        "message": message,
+        "sourceId": sourceId,
+        "targetId": targetId,
+        "path": path
+      },
+    );
   }
 
   //*função para armazenar as mensagens para poder apresenta-las(vamos colocar o setMessage no backend 'sendMessage')
-  void setMessage(String typee, String messagee) {
+  void setMessage(String typee, String messagee, String pathh) {
     MessageModel messageModel = MessageModel(
         type: typee,
         mesage: messagee,
+        path: pathh,
         time: DateTime.now().toString().substring(10, 16));
     setState(() {
       messages.add(messageModel);
@@ -163,16 +219,46 @@ class _IndividualPageState extends State<IndividualPage> {
                       icon: Icons.insert_drive_file,
                       color: Colors.indigo,
                       text: 'Documento',
+                      onTapVoid: () {},
                     ),
                     iconCreationClips(
                       icon: Icons.camera_alt,
                       color: Colors.pink,
                       text: 'Câmera',
+                      onTapVoid: () {
+                        setState(() {
+                          popTime = 3;
+                        });
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (builder) => CameraScreen(
+                              onImageSendCamera: sendImage,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     iconCreationClips(
                       icon: Icons.insert_photo,
                       color: Colors.purple,
                       text: 'Galeria',
+                      onTapVoid: () async {
+                        setState(() {
+                          popTime = 2;
+                        });
+                        file = await _picker.pickImage(
+                          source: ImageSource.gallery,
+                        );
+                        //*esse navigator esta aqui para que ao clicar na galeria e selecionar uma foto ele ir para a cameraViewScreen aonde vai ter a foto e o comentario que podemos adicionar
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (builder) => CameraViewScreen(
+                              onImageSend: sendImage,
+                              path: file!.path,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -184,16 +270,19 @@ class _IndividualPageState extends State<IndividualPage> {
                       icon: Icons.headset,
                       color: Colors.orange,
                       text: 'Áudio',
+                      onTapVoid: () {},
                     ),
                     iconCreationClips(
                       icon: Icons.location_pin,
                       color: Colors.teal,
                       text: 'Localização',
+                      onTapVoid: () {},
                     ),
                     iconCreationClips(
                       icon: Icons.person,
                       color: Colors.blue,
                       text: 'Contato',
+                      onTapVoid: () {},
                     ),
                   ],
                 ),
@@ -209,13 +298,17 @@ class _IndividualPageState extends State<IndividualPage> {
   //*Repare que a partir dos parametros que insereimos, a hora que instacimaos ali em cima,
   //*é só colocar o que queremos, isso evita a criação de varias e varias funções para a mesma finalidade
   //*repare como uso os parametros abaixo, e repare como eu os coloco ali em cima quando eu instancio a função
-  Widget iconCreationClips({IconData? icon, Color? color, String? text}) {
-    return Column(
-      children: [
-        //*Colocar esse inkwell depois apenas no 'icon'
-        InkWell(
-          onTap: () {},
-          child: CircleAvatar(
+  Widget iconCreationClips(
+      {IconData? icon,
+      Color? color,
+      String? text,
+      required VoidCallback onTapVoid}) {
+    return InkWell(
+      //*Colocar esse inkwell depois apenas no 'icon'
+      onTap: onTapVoid,
+      child: Column(
+        children: [
+          CircleAvatar(
             backgroundColor: color,
             radius: 30,
             child: Icon(
@@ -224,13 +317,13 @@ class _IndividualPageState extends State<IndividualPage> {
               color: Colors.white,
             ),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          text!,
-          style: TextStyle(fontSize: 12),
-        )
-      ],
+          SizedBox(height: 8),
+          Text(
+            text!,
+            style: TextStyle(fontSize: 12),
+          )
+        ],
+      ),
     );
   }
 
@@ -338,7 +431,7 @@ class _IndividualPageState extends State<IndividualPage> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: WillPopScope(
-                child: Column(                  
+                child: Column(
                   children: [
                     //*vamos adicionar as conversas aqui no ListView
                     Expanded(
@@ -355,10 +448,18 @@ class _IndividualPageState extends State<IndividualPage> {
                             );
                           }
                           if (messages[index].type == "source") {
-                            return MensagemEnviadaCard(
-                              message: messages[index].mesage,
-                              time: messages[index].time,
-                            );
+                            if (messages[index].path != null) {
+                              return FileCardEnviarFoto(
+                                path: messages[index].path,
+                                messageCard: messages[index].mesage,
+                                time: messages[index].time!
+                              );
+                            } else {
+                              return MensagemEnviadaCard(
+                                message: messages[index].mesage,
+                                time: messages[index].time,
+                              );
+                            }
                           } else {
                             return MensagemRecebidaCard(
                               message: messages[index].mesage,
@@ -374,7 +475,7 @@ class _IndividualPageState extends State<IndividualPage> {
                         //! corrigir esse height, pois ele nao abre o teclado de emojis !!!
                         height: 60,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,                          
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Row(
                               children: [
@@ -449,7 +550,19 @@ class _IndividualPageState extends State<IndividualPage> {
                                               ),
                                             ),
                                             IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                setState(() {
+                                                  popTime = 2;
+                                                });
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (builder) =>
+                                                        CameraScreen(
+                                                            onImageSendCamera:
+                                                                sendImage),
+                                                  ),
+                                                );
+                                              },
                                               icon: Icon(Icons.camera_alt,
                                                   color: Colors.grey),
                                             ),
@@ -481,6 +594,7 @@ class _IndividualPageState extends State<IndividualPage> {
                                             _controller.text,
                                             widget.sourceChatIndividual!.id!,
                                             widget.chatModel!.id!,
+                                            "",
                                           );
                                           //*quando enviar a mensagem ele vai limpar o inputtext
                                           _controller.clear();
